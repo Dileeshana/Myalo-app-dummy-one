@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:myalo_app/identified_result/identified_result.dart';
 import 'package:myalo_app/identifiyng_quiz/question_model.dart';
 
 class IdentifyQuiz extends StatefulWidget {
@@ -20,7 +21,7 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
         backgroundColor: Colors.blue.shade600,
         elevation: 0, //drop shadow
         title: const Text("Identify Your Sickness"),
-        ),
+      ),
       // backgroundColor: Color.fromARGB(251, 197, 245, 255),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
@@ -131,6 +132,8 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
           onPressed: () {
             if (islastQuestion) {
               //redirect to result sheet
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ResultScreen()));
             } else {
               //next question
               setState(() {

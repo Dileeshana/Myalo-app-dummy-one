@@ -11,23 +11,25 @@ class ResultScreen extends StatelessWidget {
         title: const Text("Identify Your Sickness"),
       ),
       body: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Spacer(),
-              Text(
-                "Result",
-                style: Theme.of(context)
-                    .textTheme
-                    .headline5
-                    ?.copyWith(color: Colors.black),
-              ),
-              _resultSchizophrenia(),
-              _resultAcrophobia(),
-              _resultSocialAnxeity(),
-            ],
-        )
-      ),
+          child: Column(
+        children: [
+          Spacer(flex: 1),
+          Text(
+            "Result",
+            style: Theme.of(context)
+                .textTheme
+                .headline5
+                ?.copyWith(color: Colors.black),
+          ),
+          Spacer(),
+          _resultSchizophrenia(),
+          _resultAcrophobia(),
+          _resultSocialAnxeity(),
+          Spacer(flex: 2),
+          _nextSeverityChecupButton(),
+          Spacer(flex: 5),
+        ],
+      )),
     );
   }
 
@@ -35,22 +37,33 @@ class ResultScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          alignment: Alignment.topLeft,
           width: double.infinity,
           padding: const EdgeInsets.all(15),
-          margin: EdgeInsets.symmetric(vertical: 8),
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 224, 224, 224),
             borderRadius: BorderRadius.circular(5),
           ),
-          child: Text(
-            "Schizophrenia",
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Schizophrenia",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
+              Text(
+                "75%",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -59,20 +72,31 @@ class ResultScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          alignment: Alignment.topLeft,
           width: double.infinity,
           padding: const EdgeInsets.all(15),
-          margin: EdgeInsets.symmetric(vertical: 8),
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 224, 224, 224),
             borderRadius: BorderRadius.circular(5),
           ),
-          child: Text(
-            "Acrophobia",
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Acrophobia",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
+              Text(
+                "15%",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
         )
       ],
@@ -83,23 +107,50 @@ class ResultScreen extends StatelessWidget {
     return Column(
       children: [
         Container(
-          alignment: Alignment.topLeft,
           width: double.infinity,
           padding: const EdgeInsets.all(15),
-          margin: EdgeInsets.symmetric(vertical: 8),
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
           decoration: BoxDecoration(
             color: Color.fromARGB(255, 224, 224, 224),
             borderRadius: BorderRadius.circular(5),
           ),
-          child: Text(
-            "Social Anxeity",
-            style: const TextStyle(
-              color: Colors.black,
-              fontSize: 13,
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "SocialAnxeity",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
+              Text(
+                "0%",
+                style: const TextStyle(
+                  color: Colors.black,
+                  fontSize: 13,
+                ),
+              ),
+            ],
           ),
         )
       ],
+    );
+  }
+
+  _nextSeverityChecupButton() {
+    return Container(
+      width: 100,
+      height: 40,
+      child: ElevatedButton(
+        child: Text("Next"),
+        style: ElevatedButton.styleFrom(
+          shape: StadiumBorder(),
+          primary: Colors.blue.shade600,
+          onPrimary: Color.fromARGB(230, 255, 255, 255),
+        ), 
+        onPressed: () {  },
+      ),
     );
   }
 }
