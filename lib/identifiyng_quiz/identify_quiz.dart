@@ -10,7 +10,6 @@ class IdentifyQuiz extends StatefulWidget {
 class _IdentifyQuizState extends State<IdentifyQuiz> {
   List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
-  int score = 0;
   Answer? selectedAnswer;
 
   @override

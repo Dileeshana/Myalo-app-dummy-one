@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../severity_checkup/landing_screen.dart';
 
 class ResultScreen extends StatelessWidget {
   @override
@@ -11,7 +12,7 @@ class ResultScreen extends StatelessWidget {
         title: const Text("Identify Your Sickness"),
       ),
       body: Container(
-          child: Column(
+        child: Column(
         children: [
           Spacer(flex: 1),
           Text(
@@ -148,7 +149,7 @@ class ResultScreen extends StatelessWidget {
           shape: StadiumBorder(),
           primary: Colors.blue.shade600,
           onPrimary: Color.fromARGB(230, 255, 255, 255),
-        ), 
+        ),
         onPressed: () {  },
       ),
     );

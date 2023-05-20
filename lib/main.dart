@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:myalo_app/identifiyng_quiz/identify_quiz.dart';
 import 'package:myalo_app/screens/bottom_bar.dart';
 
-import 'identified_result/identified_result.dart';
+// import 'identified_result/identified_result.dart';
+import 'severity_checkup/landing_screen.dart';
+import 'severity_checkup/severity_quiz.dart';
+import 'severity_checkup/severity_result.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,7 +22,7 @@ class MyApp extends StatelessWidget {
         
       primarySwatch: Colors.blue
       ),
-      home: IdentifyQuiz(),
+      home: ResultScreen(),
     );
   }
 }
