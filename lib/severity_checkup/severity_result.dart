@@ -85,6 +85,7 @@ class ResultScreen extends StatelessWidget {
             Container(
               alignment: Alignment.center,
               padding: EdgeInsets.symmetric(vertical: 20, horizontal: 25),
+              // padding: EdgeInsets.symmetric(vertical: 20, horizontal: 120), //use this for single box
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

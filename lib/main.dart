@@ -6,6 +6,9 @@ import 'package:myalo_app/screens/bottom_bar.dart';
 import 'severity_checkup/landing_screen.dart';
 import 'severity_checkup/severity_quiz.dart';
 import 'severity_checkup/severity_result.dart';
+import 'treatment_method_1/schizophrenia_landing.dart';
+import 'treatment_method_1/schizophrenia_ui_2.dart';
+import 'treatment_method_1/social_anxiety_landing.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
         
       primarySwatch: Colors.blue
       ),
-      home: ResultScreen(),
+      home: SocialAnxietyLanding(),
     );
   }
 }
