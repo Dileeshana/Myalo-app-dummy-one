@@ -26,7 +26,7 @@ class SeverityLanding extends StatelessWidget {
             Spacer(),
             const Text("You complete the Sickness Identification.",
                 style: TextStyle(height: 7)),
-            const Text("Let check the severity of your ilness."),
+            const Text("Let`s check the severity of your ilness."),
             Spacer(flex: 1),
             _nextSeverityQuizButton(),
             Spacer(flex: 5)

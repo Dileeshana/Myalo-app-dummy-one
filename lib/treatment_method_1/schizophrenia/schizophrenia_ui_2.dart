@@ -46,7 +46,7 @@ class SchizophreniaSecPage extends StatelessWidget {
                   child: Row(
                     children: [
                       Text(
-                        '75 bpm ',
+                        '63 bpm ',
                         // style: TextStyle(
                         //   fontSize: 
                         // ),

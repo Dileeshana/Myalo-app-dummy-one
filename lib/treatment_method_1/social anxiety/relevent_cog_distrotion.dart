@@ -23,7 +23,7 @@ class ReleventDistrotion extends StatelessWidget {
           ),
           Container(
             child: Text(
-              "Q1 : djflzsdfgbzldghbzdlgvbzdlb sldhfbz",
+              "Am I using extreme labels or judgments without\nconsidering the full context?",
               style: TextStyle(color: Colors.black, fontSize: 15),
             ),
           ),

@@ -12,6 +12,7 @@ import 'treatment_method_1/social anxiety/relevent_cog_distrotion.dart';
 import 'treatment_method_1/social anxiety/social_anxiety_distrotion.dart';
 import 'treatment_method_1/social anxiety/social_anxiety_landing.dart';
 import 'treatment_method_1/social anxiety/social_anxiety_marks.dart';
+import 'treatment_method_2/landing.dart';
 
 void main() {
   runApp(const MyApp());
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
         
       primarySwatch: Colors.blue
       ),
-      home: SocialAnxietyMarks(),
+      home: HighSeverityLanding(),
     );
   }
 }
