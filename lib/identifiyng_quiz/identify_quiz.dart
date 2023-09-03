@@ -11,58 +11,47 @@ class IdentifyQuiz extends StatefulWidget {
 }
 
 class _IdentifyQuizState extends State<IdentifyQuiz> {
-  List<Question> questionList = [];
+  List<Question> questionList = getQuestions();
   int currentQuestionIndex = 0;
   Answer? selectedAnswer;
-  String url = '';
+  // String url = '';
 
-  Map<String, dynamic> answers = {
-    'social_anxiety': {},
-    'schizophrenia': {},
-    'acrophobia': {},
-  };
+  // Map<String, dynamic> answers = {
+  //   'social_anxiety': {},
+  //   'schizophrenia': {},
+  //   'acrophobia': {},
+  // };
 
-  void selectAnswer(String illness, String question, String answer) {
-    setState(() {
-      answers[illness][question] = answer;
-    });
-  }
+  // void selectAnswer(String illness, String question, String answer) {
+  //   setState(() {
+  //     answers[illness][question] = answer;
+  //   });
+  // }
 
-  @override
-  void initState() {
-    super.initState();
-    // Fetch questions from the API when the widget is initialized
-    getQuestionsFromAPI().then((questions) {
-      setState(() {
-        questionList = questions;
-      });
-    }).catchError((error) {
-      print("Error fetching questions: $error");
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // Fetch questions from the API when the widget is initialized
+  //   getQuestionsFromAPI().then((questions) {
+  //     setState(() {
+  //       questionList = questions;
+  //     });
+  //   }).catchError((error) {
+  //     print("Error fetching questions: $error");
+  //   });
+  // }
 
-  void submitAnswers() async {
-    try {
-      Map<String, dynamic> result = await Functions.submitAnswers(answers);
-      // Handle the result and display the most likely illness and scores
-    } catch (e) {
-      // Handle error
-    }
-  }
+  // void submitAnswers() async {
+  //   try {
+  //     Map<String, dynamic> result = await Functions.submitAnswers(answers);
+  //     // Handle the result and display the most likely illness and scores
+  //   } catch (e) {
+  //     // Handle error
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.blue.shade600,
-        elevation: 0, //drop shadow
-        title: const Text("Identify Your Sickness"),
-      ),
-      body: questionList.isEmpty // Check if questionList is empty
-          ? Center(child: CircularProgressIndicator()) // Show loading indicator while fetching
-          : _buildQuizWidget(), // Build the quiz widget when questions are available
-    );
     // return Scaffold(
     //   appBar: AppBar(
     //     centerTitle: true,
@@ -70,41 +59,52 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
     //     elevation: 0, //drop shadow
     //     title: const Text("Identify Your Sickness"),
     //   ),
-    //   // backgroundColor: Color.fromARGB(251, 197, 245, 255),
-    //   body: Container(
-    //     margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-    //     child: Column(
-    //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-    //       children: [
-    //         // const Text(
-    //         //   "Identify Your Sickness",
-    //         //   style: TextStyle(
-    //         //     color: Colors.black87,
-    //         //     fontSize: 22,
-    //         //   ),
-    //         // ),
-    //         _questionWidget(),
-    //         _answerList(),
-    //         _nextButton(),
-    //       ],
-    //     ),
-    //   ),
+    //   body: questionList.isEmpty // Check if questionList is empty
+    //       ? Center(child: CircularProgressIndicator()) // Show loading indicator while fetching
+    //       : _buildQuizWidget(), // Build the quiz widget when questions are available
     // );
-  }
-
-   Widget _buildQuizWidget() {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          _questionWidget(),
-          _answerList(),
-          _nextButton(),
-        ],
+    return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Colors.blue.shade600,
+        elevation: 0, //drop shadow
+        title: const Text("Identify Your Sickness"),
+      ),
+      // backgroundColor: Color.fromARGB(251, 197, 245, 255),
+      body: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            // const Text(
+            //   "Identify Your Sickness",
+            //   style: TextStyle(
+            //     color: Colors.black87,
+            //     fontSize: 22,
+            //   ),
+            // ),
+            _questionWidget(),
+            _answerList(),
+            _nextButton(),
+          ],
+        ),
       ),
     );
   }
+
+  //  Widget _buildQuizWidget() {
+  //   return Container(
+  //     margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
+  //     child: Column(
+  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //       children: [
+  //         _questionWidget(),
+  //         _answerList(),
+  //         _nextButton(),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   _questionWidget() {
     return Column(
@@ -179,75 +179,75 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
     );
   }
 
+  _nextButton() {
+    bool islastQuestion = false;
+    if (currentQuestionIndex == questionList.length - 1) {
+      islastQuestion = true;
+    }
+
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.5,
+      height: 40,
+      child: ElevatedButton(
+          child: Text(islastQuestion ? "Show Results" : "Next"),
+          style: ElevatedButton.styleFrom(
+            shape: const StadiumBorder(),
+            primary: Colors.green.shade400,
+            onPrimary: Colors.black,
+          ),
+          onPressed: () {
+            if (islastQuestion) {
+              //redirect to result sheet
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => ResultScreen()));
+            } else {
+              //next question
+              setState(() {
+                selectedAnswer = null;
+                currentQuestionIndex++;
+              });
+            }
+          }),
+    );
+  }
   // _nextButton() {
-  //   bool islastQuestion = false;
+  //   bool isLastQuestion = false;
   //   if (currentQuestionIndex == questionList.length - 1) {
-  //     islastQuestion = true;
+  //     isLastQuestion = true;
   //   }
 
   //   return Container(
   //     width: MediaQuery.of(context).size.width * 0.5,
   //     height: 40,
   //     child: ElevatedButton(
-  //         child: Text(islastQuestion ? "Show Results" : "Next"),
-  //         style: ElevatedButton.styleFrom(
-  //           shape: const StadiumBorder(),
-  //           primary: Colors.green.shade400,
-  //           onPrimary: Colors.black,
-  //         ),
-  //         onPressed: () {
-  //           if (islastQuestion) {
-  //             //redirect to result sheet
-  //             Navigator.push(context,
-  //                 MaterialPageRoute(builder: (context) => ResultScreen()));
-  //           } else {
-  //             //next question
-  //             setState(() {
-  //               selectedAnswer = null;
-  //               currentQuestionIndex++;
-  //             });
+  //       child: Text(isLastQuestion ? "Show Results" : "Next"),
+  //       style: ElevatedButton.styleFrom(
+  //         shape: const StadiumBorder(),
+  //         primary: Colors.green.shade400,
+  //         onPrimary: Colors.black,
+  //       ),
+  //       onPressed: () async {
+  //         if (isLastQuestion) {
+  //           try {
+  //             Map<String, dynamic> result = await Functions.submitAnswers(answers);
+  //             // Handle the result and display the most likely illness and scores
+  //             // You can navigate to the result screen with this data
+  //             Navigator.push(context, MaterialPageRoute(builder: (context) => ResultScreen(result)));
+  //           } catch (e) {
+  //             // Handle error
+  //             print("Error: $e");
   //           }
-  //         }),
+  //         } else {
+  //           // Next question
+  //           setState(() {
+  //             selectedAnswer = null;
+  //             currentQuestionIndex++;
+  //           });
+  //         }
+  //       },
+  //     ),
   //   );
   // }
-  _nextButton() {
-  bool isLastQuestion = false;
-  if (currentQuestionIndex == questionList.length - 1) {
-    isLastQuestion = true;
-  }
-
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.5,
-    height: 40,
-    child: ElevatedButton(
-      child: Text(isLastQuestion ? "Show Results" : "Next"),
-      style: ElevatedButton.styleFrom(
-        shape: const StadiumBorder(),
-        primary: Colors.green.shade400,
-        onPrimary: Colors.black,
-      ),
-      onPressed: () async {
-        if (isLastQuestion) {
-          try {
-            Map<String, dynamic> result = await Functions.submitAnswers(answers);
-            // Handle the result and display the most likely illness and scores
-            // You can navigate to the result screen with this data
-            Navigator.push(context, MaterialPageRoute(builder: (context) => ResultScreen(result)));
-          } catch (e) {
-            // Handle error
-            print("Error: $e");
-          }
-        } else {
-          // Next question
-          setState(() {
-            selectedAnswer = null;
-            currentQuestionIndex++;
-          });
-        }
-      },
-    ),
-  );
-}
 
 
 }

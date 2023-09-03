@@ -50,7 +50,7 @@ class ResultScreen extends StatelessWidget {
                             height: 3.2),
                       ),
                       Text(
-                        "Initial Level Schizophrenia",
+                        "Initial Level Acrophobia",
                         // severityLevel, //after completion backend release this
                         style: TextStyle(
                             fontSize: 14,

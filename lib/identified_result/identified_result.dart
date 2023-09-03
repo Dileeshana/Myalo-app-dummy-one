@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../severity_checkup/landing_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  final Map<String, dynamic> result;
+  // final Map<String, dynamic> result;
 
-  ResultScreen(this.result);
+  // ResultScreen(this.result);
   
   @override
   Widget build(BuildContext context) {

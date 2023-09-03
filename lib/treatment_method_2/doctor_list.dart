@@ -47,9 +47,9 @@ class _DoctorList extends State<DoctorList> {
 
           //message
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 25),
+            padding: const EdgeInsets.symmetric(vertical: 15),
             child: Text(
-              'bla bla',
+              'Choose your mental health inspector',
               // style: TextStyle(color: Colors.grey[600]),
             ),
           ),
