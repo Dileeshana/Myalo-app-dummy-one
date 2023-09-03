@@ -37,10 +37,17 @@ dependencies:
   cupertino_icons: ^1.0.2
   d_chart: ^2.2.11
   flutter_inset_box_shadow: ^1.0.8
+  firebase_core: ^2.15.1
+  firebase_auth: ^4.8.0
+  cloud_firestore: ^4.9.0
+  http: ^1.1.0
+  vr_player: ^0.2.1
+  
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  http:
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

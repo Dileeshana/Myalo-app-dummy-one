@@ -1,3 +1,8 @@
+// ignore_for_file: unused_import
+
+// ignore: avoid_web_libraries_in_flutter
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
 import 'severity_quiz.dart';
 
@@ -28,7 +33,7 @@ class SeverityLanding extends StatelessWidget {
                 style: TextStyle(height: 7)),
             const Text("Let`s check the severity of your ilness."),
             Spacer(flex: 1),
-            _nextSeverityQuizButton(),
+            _getStartedQuizButton(context),
             Spacer(flex: 5)
           ],
         ),
@@ -36,7 +41,8 @@ class SeverityLanding extends StatelessWidget {
     );
   }
 
-  _nextSeverityQuizButton() {
+  _getStartedQuizButton(BuildContext context) {
+    
     return Container(
       width: 200,
       height: 40,
@@ -47,7 +53,9 @@ class SeverityLanding extends StatelessWidget {
           primary: Colors.blue.shade600,
           onPrimary: Color.fromARGB(230, 255, 255, 255),
         ),
-        onPressed: () {  },
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SeverityQuiz()));
+        },
       ),
     );
   }

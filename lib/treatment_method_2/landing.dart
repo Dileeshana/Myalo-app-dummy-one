@@ -68,7 +68,7 @@ class HighSeverityLanding extends StatelessWidget {
                   text: TextSpan(
                     style: TextStyle(fontSize: 15, color: Colors.black, fontWeight: FontWeight.w500),
                     children: [
-                      TextSpan(text: "Select another mental Inspector"),
+                      TextSpan(text: "Chose a mental Inspector"),
                     ]
                   )
                   ),

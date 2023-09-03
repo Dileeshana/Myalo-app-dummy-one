@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../severity_checkup/landing_screen.dart';
 
 class ResultScreen extends StatelessWidget {
+  final Map<String, dynamic> result;
+
+  ResultScreen(this.result);
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,6 +15,15 @@ class ResultScreen extends StatelessWidget {
         elevation: 0, //drop shadow
         title: const Text("Identify Your Sickness"),
       ),
+      // body: Center(
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: [
+      //       Text("Most Likely Illness: ${result['most_likely_illness']}"),
+      //       // Display other information from the result as needed
+      //     ],
+      //   ),
+      // ),
       body: Container(
         child: Column(
         children: [
@@ -23,9 +36,9 @@ class ResultScreen extends StatelessWidget {
                 ?.copyWith(color: Colors.black),
           ),
           Spacer(),
-          _resultSchizophrenia(),
+          // _resultSchizophrenia(),
           _resultAcrophobia(),
-          _resultSocialAnxeity(),
+          // _resultSocialAnxeity(),
           Spacer(flex: 2),
           _nextSeverityChecupButton(),
           Spacer(flex: 5),
@@ -84,17 +97,17 @@ class ResultScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                "Acrophobia",
+                "based on the questionnaire\n you have",
                 style: const TextStyle(
                   color: Colors.black,
                   fontSize: 13,
                 ),
               ),
               Text(
-                "15%",
+                "Acrophobia",
                 style: const TextStyle(
                   color: Colors.black,
-                  fontSize: 13,
+                  fontSize: 15,
                 ),
               ),
             ],

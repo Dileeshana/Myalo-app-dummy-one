@@ -1,8 +1,19 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
-import '../severity_checkup/landing_screen.dart';
+import '../treatment_method_1/acrophobia/acrophobia_landing.dart';
+import '../treatment_method_2/landing.dart';
 // import 'package:flutter_inset_box_shadow/flutter_inset_box_shadow.dart';
 
 class ResultScreen extends StatelessWidget {
+  // final String severityLevel;
+  // final List<String> recommendations;
+
+  // ResultScreen({
+  //   required this.severityLevel,
+  //   required this.recommendations,
+  // });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,14 +28,9 @@ class ResultScreen extends StatelessWidget {
           children: [
             Padding(padding: EdgeInsets.symmetric(vertical: 5)),
             Center(
-              child: Text(
-              "Results",
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w500,
-                height: 3)
-              )
-            ),
+                child: Text("Results",
+                    style: TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.w500, height: 3))),
             Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
@@ -38,20 +44,19 @@ class ResultScreen extends StatelessWidget {
                       Text(
                         "You're diagnoised with",
                         style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black87,
-                          height: 3.2
-                          ),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black87,
+                            height: 3.2),
                       ),
                       Text(
                         "Initial Level Schizophrenia",
+                        // severityLevel, //after completion backend release this
                         style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w500,
-                          color: Colors.black,
-                          height: 1.2
-                          ),
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                            height: 1.2),
                       )
                     ],
                   ),
@@ -89,41 +94,83 @@ class ResultScreen extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 80,
-                      width: 150,
-                      color: Colors.blue[100],
-                      child: Text(
-                        "Initial Treatments",
-                        style: TextStyle(
-                        fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Container(
-                      alignment: Alignment.center,
-                      height: 80,
-                      width: 150,
-                      color: Colors.blue[100],
-                      child: Text(
-                        "Mediocre Treatments",
-                        style: TextStyle(
-                        fontWeight: FontWeight.w600
-                        ),
-                      ),
-                    ),
-                  ),
+                  _initialTreatmentButton(context),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.circular(10),
+                  //   child: Container(
+                  //     alignment: Alignment.center,
+                  //     height: 80,
+                  //     width: 150,
+                  //     color: Colors.blue[100],
+                  //     child: Text(
+                  //       "Initial Treatments",
+                  //       style: TextStyle(fontWeight: FontWeight.w600),
+                  //     ),
+                  //   ),
+                  // ),
+                  _extremeTreatmentButton(context),
+                  // ClipRRect(
+                  //   borderRadius: BorderRadius.circular(10),
+                  //   child: Container(
+                  //     alignment: Alignment.center,
+                  //     height: 80,
+                  //     width: 150,
+                  //     color: Colors.blue[100],
+                  //     child: Text(
+                  //       "Mediocre Treatments",
+                  //       style: TextStyle(fontWeight: FontWeight.w600),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  _initialTreatmentButton(BuildContext context) {
+    return Container(
+      width: 150,
+      height: 80,
+      child: ElevatedButton(
+        child: Text(
+          "Initial Treatments",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        style: ElevatedButton.styleFrom(
+            shape: LinearBorder(),
+            primary: Colors.blue[100],
+            onPrimary: Colors.black
+            ),
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AcrophobiaLanding()));
+        },
+      ),
+    );
+  }
+
+  _extremeTreatmentButton(BuildContext context) {
+    return Container(
+      width: 150,
+      height: 80,
+      child: ElevatedButton(
+        child: Text(
+          "Mediocre/Extreme Treatments",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+        style: ElevatedButton.styleFrom(
+            shape: LinearBorder(),
+            primary: Colors.blue[100],
+            onPrimary: Colors.black
+            ),
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => HighSeverityLanding()));
+        },
       ),
     );
   }
