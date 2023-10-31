@@ -5,8 +5,6 @@ import 'Patient.dart';
 import 'Doctor.dart';
 import 'register.dart';
 
-
-
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -135,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
                           },
                           keyboardType: TextInputType.emailAddress,
                         ),
-                       
                         SizedBox(
                           height: 20,
                         ),
@@ -261,25 +258,25 @@ class _LoginPageState extends State<LoginPage> {
   void route() {
     User? user = FirebaseAuth.instance.currentUser;
     var kk = FirebaseFirestore.instance
-            .collection('users')
-            .doc(user!.uid)
-            .get()
-            .then((DocumentSnapshot documentSnapshot) {
+        .collection('users')
+        .doc(user!.uid)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
       if (documentSnapshot.exists) {
-        if (documentSnapshot.get('rool') == "Doctor") {
-           Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>  Doctor(),
-          ),
-        );
-        }else{
+        if (documentSnapshot.get('role') == "Doctor") {
           Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>  Patient(),
-          ),
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => Doctor(),
+            ),
+          );
+        } else {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Patient(),
+            ),
+          );
         }
       } else {
         print('Document does not exist on the database');
@@ -306,5 +303,3 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 }
-
-

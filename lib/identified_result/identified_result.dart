@@ -1,3 +1,5 @@
+// import 'dart:js';
+
 import 'package:flutter/material.dart';
 import '../severity_checkup/landing_screen.dart';
 
@@ -5,7 +7,7 @@ class ResultScreen extends StatelessWidget {
   // final Map<String, dynamic> result;
 
   // ResultScreen(this.result);
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,7 +27,7 @@ class ResultScreen extends StatelessWidget {
       //   ),
       // ),
       body: Container(
-        child: Column(
+          child: Column(
         children: [
           Spacer(flex: 1),
           Text(
@@ -40,7 +42,7 @@ class ResultScreen extends StatelessWidget {
           _resultAcrophobia(),
           // _resultSocialAnxeity(),
           Spacer(flex: 2),
-          _nextSeverityChecupButton(),
+          _nextSeverityChecupButton(context),
           Spacer(flex: 5),
         ],
       )),
@@ -152,7 +154,7 @@ class ResultScreen extends StatelessWidget {
     );
   }
 
-  _nextSeverityChecupButton() {
+  _nextSeverityChecupButton(BuildContext context) {
     return Container(
       width: 100,
       height: 40,
@@ -163,7 +165,10 @@ class ResultScreen extends StatelessWidget {
           primary: Colors.blue.shade600,
           onPrimary: Color.fromARGB(230, 255, 255, 255),
         ),
-        onPressed: () {  },
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => SeverityLanding()));
+        },
       ),
     );
   }

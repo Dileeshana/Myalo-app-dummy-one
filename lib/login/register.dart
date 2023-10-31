@@ -33,7 +33,7 @@ class _RegisterState extends State<Register> {
     'Doctor',
   ];
   var _currentItemSelected = "Patient";
-  var rool = "Patient";
+  var role = "Patient";
 
   @override
   Widget build(BuildContext context) {
@@ -197,7 +197,7 @@ class _RegisterState extends State<Register> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              "Rool : ",
+                              "Role : ",
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -226,7 +226,7 @@ class _RegisterState extends State<Register> {
                               onChanged: (newValueSelected) {
                                 setState(() {
                                   _currentItemSelected = newValueSelected!;
-                                  rool = newValueSelected;
+                                  role = newValueSelected;
                                 });
                               },
                               value: _currentItemSelected,
@@ -274,7 +274,7 @@ class _RegisterState extends State<Register> {
                                   showProgress = true;
                                 });
                                 signUp(emailController.text,
-                                    passwordController.text, rool);
+                                    passwordController.text, role);
                               },
                               child: Text(
                                 "Register",
@@ -309,21 +309,21 @@ class _RegisterState extends State<Register> {
     );
   }
 
-  void signUp(String email, String password, String rool) async {
+  void signUp(String email, String password, String role) async {
     CircularProgressIndicator();
     if (_formkey.currentState!.validate()) {
       await _auth
           .createUserWithEmailAndPassword(email: email, password: password)
-          .then((value) => {postDetailsToFirestore(email, rool)})
+          .then((value) => {postDetailsToFirestore(email, role)})
           .catchError((e) {});
     }
   }
 
-  postDetailsToFirestore(String email, String rool) async {
+  postDetailsToFirestore(String email, String role) async {
     FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
     var user = _auth.currentUser;
     CollectionReference ref = FirebaseFirestore.instance.collection('users');
-    ref.doc(user!.uid).set({'email': emailController.text, 'rool': rool});
+    ref.doc(user!.uid).set({'email': emailController.text, 'role': role});
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginPage()));
   }

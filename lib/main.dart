@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 import 'identifiyng_quiz/identify_quiz.dart';
+import 'login/login.dart';
 import 'severity_checkup/landing_screen.dart';
+import 'treatment_method_1/acrophobia/acrophobia_landing.dart';
 
 
 
@@ -20,7 +22,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(primarySwatch: Colors.blue),
-      home: SeverityLanding(),
+      home: AcrophobiaLanding(),
+      // home: LoginPage(),
     );
   }
 }
