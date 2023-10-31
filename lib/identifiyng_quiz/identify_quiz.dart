@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:myalo_app/identifiyng_quiz/identified_result.dart';
 import 'package:firebase_database/firebase_database.dart';
 
+import 'mock_data.dart';
 import 'quiz_model.dart';
+import 'dart:math';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class IdentifyQuiz extends StatefulWidget {
   @override
@@ -17,44 +20,103 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
   Answer? selectedAnswer;
   Map<int, Answer> userAnswers = {}; // to keep track of answers
 
+  StreamSubscription? connectivitySubscription;
+  bool isConnected = true; // Initially assume there's connection
+
   @override
   void initState() {
     super.initState();
-    fetchQuestionsFromFirebase().then((questions) {
-      setState(() {
-          questionList = questions;
-      });
+    // fetchQuestionsFromFirebase().then((questions) {
+    //   setState(() {
+    //       questionList = questions;
+    //   });
+    // });
+    // Initialize connectivity listening
+    connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      if (result == ConnectivityResult.none) {
+        setState(() {
+          isConnected = false;
+        });
+      } else {
+        setState(() {
+          isConnected = true;
+        });
+        if (questionList.isEmpty) {
+          fetchQuestionsFromFirebase().then((questions) {
+            setState(() {
+              questionList = questions;
+            });
+          });
+        }
+      }
     });
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    connectivitySubscription?.cancel(); // Cleanup after ourselves
+  }
+
   Future<List<Question>> fetchQuestionsFromFirebase() async {
-  final databaseReference = FirebaseDatabase.instance.reference();
-  List<Question> questions = [];
+    await Future.delayed(Duration(seconds: 3));  // Simulates network delay
+    List<Question> allQuestions = mockQuestions;
+    return getRandomQuestions(allQuestions, 3); // get 3 random questions from each illness
+  // final databaseReference = FirebaseDatabase.instance.reference();
+  // List<Question> questions = [];
 
-  await databaseReference.child('questions').once().then((DataSnapshot snapshot) {
-    Map<dynamic, dynamic>? questionData = snapshot.value as Map<dynamic, dynamic>?; // cast here
-    // Object? questionData = snapshot.value;
-    questionData!.forEach((questionId, questionDetails) {
-      List<Answer> answerList = [];
-      Map<dynamic, dynamic> answers = questionDetails['answers']as Map<dynamic, dynamic>;
+  // await databaseReference.child('questions').once().then((DataSnapshot snapshot) {
+  //   Map<dynamic, dynamic>? questionData = snapshot.value as Map<dynamic, dynamic>?; // cast here
+  //   // Object? questionData = snapshot.value;
+  //   questionData!.forEach((questionId, questionDetails) {
+  //     List<Answer> answerList = [];
+  //     Map<dynamic, dynamic> answers = questionDetails['answers']as Map<dynamic, dynamic>;
 
-      answers.forEach((answerId, answerText) {
-        answerList.add(Answer(answerId: int.parse(answerId), answerText: answerText));
-      });
+  //     answers.forEach((answerId, answerText) {
+  //       answerList.add(Answer(answerId: int.parse(answerId), answerText: answerText));
+  //     });
 
-      questions.add(
-        Question(
-          questionText: questionDetails['text'],
-          illness: questionDetails['illness'],
-          MID: questionDetails['MID'],
-          answerList: answerList,
-        ),
-      );
-    });
-  } as FutureOr Function(DatabaseEvent value));
+  //     questions.add(
+  //       Question(
+  //         questionText: questionDetails['text'],
+  //         illness: questionDetails['illness'],
+  //         MID: questionDetails['MID'],
+  //         answerList: answerList,
+  //       ),
+  //     );
+  //   });
+  // } as FutureOr Function(DatabaseEvent value));
 
-  return questions;
-}
+  // return questions;
+  }
+
+  List<Question> getRandomQuestions(List<Question> allQuestions, int questionsPerIllness) {
+    // Group questions by illness
+    Map<String, List<Question>> groupedQuestions = {};
+    for (var question in allQuestions) {
+      if (!groupedQuestions.containsKey(question.illness)) {
+        groupedQuestions[question.illness] = [];
+      }
+      groupedQuestions[question.illness]!.add(question);
+    }
+
+    // Randomly pick 'questionsPerIllness' questions from each group
+    List<Question> randomQuestions = [];
+    var rng = Random();
+    for (var illness in groupedQuestions.keys) {
+      var questions = groupedQuestions[illness]!;
+      if (questions.length <= questionsPerIllness) {
+        randomQuestions.addAll(questions);
+      } else {
+        for (int i = 0; i < questionsPerIllness; i++) {
+          var index = rng.nextInt(questions.length);
+          randomQuestions.add(questions[index]);
+          questions.removeAt(index);  // Remove the selected question to avoid picking it again
+        }
+      }
+    }
+    return randomQuestions;
+  }
 
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,18 +183,18 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
   
 
   _answerList() {
-  if (questionList.isEmpty || currentQuestionIndex >= questionList.length) {
-    return SizedBox.shrink();  // Return an empty widget if the questionList is not loaded or if the index is out of range
+    if (questionList.isEmpty || currentQuestionIndex >= questionList.length) {
+      return SizedBox.shrink();  // Return an empty widget if the questionList is not loaded or if the index is out of range
+    }
+    return Column(
+      children: questionList[currentQuestionIndex]
+          .answerList
+          .map(
+            (e) => _answerButton(e),
+          )
+          .toList(),
+    );
   }
-  return Column(
-    children: questionList[currentQuestionIndex]
-        .answerList
-        .map(
-          (e) => _answerButton(e),
-        )
-        .toList(),
-  );
-}
 
 
   // _answerList() {
