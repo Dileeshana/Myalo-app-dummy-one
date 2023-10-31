@@ -57,12 +57,11 @@
 // }
 
 import 'package:flutter/material.dart';
-import 'package:myalo_app/identifiyng_quiz/function.dart';
 import 'package:myalo_app/identifiyng_quiz/quiz_model.dart';
 import '../severity_checkup/landing_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  ResultScreen(Map<int, Answer> userAnswers);
+  const ResultScreen(Map<int, Answer> userAnswers);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +75,7 @@ class ResultScreen extends StatelessWidget {
       body: Container(
           child: Column(
         children: [
-          Spacer(flex: 1),
+          const Spacer(flex: 1),
           Text(
             "Result",
             style: Theme.of(context)

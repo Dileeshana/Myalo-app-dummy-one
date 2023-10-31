@@ -1,3 +1,5 @@
+// ignore_for_file: unused_field
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -257,6 +259,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void route() {
     User? user = FirebaseAuth.instance.currentUser;
+    // ignore: unused_local_variable
     var kk = FirebaseFirestore.instance
         .collection('users')
         .doc(user!.uid)

@@ -88,6 +88,10 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
 
 
   _questionWidget() {
+    if (questionList.isEmpty) {
+      return const CircularProgressIndicator(); // Show a loading spinner if questions are not loaded yet
+    }
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -116,17 +120,31 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
   }
   
 
-
   _answerList() {
-    return Column(
-      children: questionList[currentQuestionIndex]
-          .answerList
-          .map(
-            (e) => _answerButton(e),
-          )
-          .toList(),
-    );
+  if (questionList.isEmpty || currentQuestionIndex >= questionList.length) {
+    return SizedBox.shrink();  // Return an empty widget if the questionList is not loaded or if the index is out of range
   }
+  return Column(
+    children: questionList[currentQuestionIndex]
+        .answerList
+        .map(
+          (e) => _answerButton(e),
+        )
+        .toList(),
+  );
+}
+
+
+  // _answerList() {
+  //   return Column(
+  //     children: questionList[currentQuestionIndex]
+  //         .answerList
+  //         .map(
+  //           (e) => _answerButton(e),
+  //         )
+  //         .toList(),
+  //   );
+  // }
 
   Widget _answerButton(Answer answer) {
     bool isSelected = answer == selectedAnswer;
