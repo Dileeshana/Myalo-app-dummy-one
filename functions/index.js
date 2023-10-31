@@ -1,43 +1,49 @@
-// const functions = require('firebase-functions');
-
-// // Create and deploy a HTTP Cloud Function
-// exports.helloWorld = functions.https.onRequest((request, response) => {
-//   response.send("Hello from Firebase Cloud Functions! yo this is dileeshana");
-// });
-
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-
-exports.getQuestions = functions.https.onRequest(async (req, res) => {
-    const db = admin.firestore();
-    
+exports.getQuestions = functions.https.onRequest(async (request, response) => {
     try {
-        const questionsSnapshot = await db.collection('questions').limit(9).get();
-        const questions = [];
-        questionsSnapshot.forEach(doc => {
-            questions.push({id: doc.id, ...doc.data()});
+        const db = admin.database();
+        const questionsRef = db.ref('questions');
+
+        questionsRef.once('value', (snapshot) => {
+            let questions = snapshot.val();
+            response.send({ questions });
         });
-        res.status(200).send(questions);
+
     } catch (error) {
-        res.status(500).send(error);
+        console.error('Error retrieving questions:', error);
+        response.status(500).send({ error: 'Failed to fetch questions.' });
     }
 });
 
-exports.predictIllness = functions.https.onRequest(async (req, res) => {
-    if (req.method !== 'POST') {
-        return res.status(400).send('Please send a POST request');
-    }
 
-    const userAnswers = req.body.answers; // Assuming answers come in the format: [{id: 'q1', answer: 'A'}, ...]
-
-    const counts = {A: 0, B: 0, C: 0};
-    userAnswers.forEach(answer => {
-        const illness = answer.illness; 
-        counts[illness]++;
-    });
-
-    const predictedIllness = Object.keys(counts).reduce((a, b) => counts[a] > counts[b] ? a : b); // This will give the illness with the highest count
-    res.status(200).send({illness: predictedIllness});
+exports.predictIllness = functions.https.onRequest((request, response) => {
+    // Extract answers from request
+    const answers = request.body.answers; // assuming answers are sent as a dictionary with QID:AID pairs
+    
+    // Apply rule-based logic
+    const predictedIllness = applyRules(answers);
+    
+    // Respond with predicted illness
+    response.send({ illness: predictedIllness });
 });
+
+function applyRules(answers) {
+    // This is the simple rule logic we defined earlier; you might want to enhance this based on your data
+    // answers are expected to be in the format {QID: AID, ...}
+    
+    // Example: For QID: 1, if AID is 2, then it might indicate "Social Anxiety"
+    if (answers["1"] === "2" && answers["2"] === "2") {
+        return "social anxiety";
+    } else if (answers["19"] === "2" && answers["20"] === "2") {
+        return "acrophobia";
+    } else if (answers["8"] === "2" && answers["9"] === "2") {
+        return "schizophrenia";
+    } else {
+        return "unknown";  // Default case
+    }
+}
+
+

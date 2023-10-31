@@ -10,5 +10,10 @@
         "firebase-debug.*.log"
       ]
     }
-  ]
+  ],
+  "emulators": {
+    "database": {
+      "port": 9000
+    }
+  }
 }

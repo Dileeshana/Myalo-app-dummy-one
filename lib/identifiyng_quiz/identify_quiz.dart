@@ -1,9 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:myalo_app/identified_result/identified_result.dart';
-import 'package:myalo_app/identifiyng_quiz/function.dart';
-import 'package:myalo_app/identifiyng_quiz/question_model.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:myalo_app/identifiyng_quiz/identified_result.dart';
+import 'package:firebase_database/firebase_database.dart';
+
+import 'quiz_model.dart';
 
 class IdentifyQuiz extends StatefulWidget {
   @override
@@ -11,58 +12,51 @@ class IdentifyQuiz extends StatefulWidget {
 }
 
 class _IdentifyQuizState extends State<IdentifyQuiz> {
-  List<Question> questionList = getQuestions();
+  List<Question> questionList = [];
   int currentQuestionIndex = 0;
   Answer? selectedAnswer;
-  // String url = '';
-
-  // Map<String, dynamic> answers = {
-  //   'social_anxiety': {},
-  //   'schizophrenia': {},
-  //   'acrophobia': {},
-  // };
-
-  // void selectAnswer(String illness, String question, String answer) {
-  //   setState(() {
-  //     answers[illness][question] = answer;
-  //   });
-  // }
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // Fetch questions from the API when the widget is initialized
-  //   getQuestionsFromAPI().then((questions) {
-  //     setState(() {
-  //       questionList = questions;
-  //     });
-  //   }).catchError((error) {
-  //     print("Error fetching questions: $error");
-  //   });
-  // }
-
-  // void submitAnswers() async {
-  //   try {
-  //     Map<String, dynamic> result = await Functions.submitAnswers(answers);
-  //     // Handle the result and display the most likely illness and scores
-  //   } catch (e) {
-  //     // Handle error
-  //   }
-  // }
+  Map<int, Answer> userAnswers = {}; // to keep track of answers
 
   @override
+  void initState() {
+    super.initState();
+    fetchQuestionsFromFirebase().then((questions) {
+      setState(() {
+          questionList = questions;
+      });
+    });
+  }
+
+  Future<List<Question>> fetchQuestionsFromFirebase() async {
+  final databaseReference = FirebaseDatabase.instance.reference();
+  List<Question> questions = [];
+
+  await databaseReference.child('questions').once().then((DataSnapshot snapshot) {
+    Map<dynamic, dynamic>? questionData = snapshot.value as Map<dynamic, dynamic>?; // cast here
+    // Object? questionData = snapshot.value;
+    questionData!.forEach((questionId, questionDetails) {
+      List<Answer> answerList = [];
+      Map<dynamic, dynamic> answers = questionDetails['answers']as Map<dynamic, dynamic>;
+
+      answers.forEach((answerId, answerText) {
+        answerList.add(Answer(answerId: int.parse(answerId), answerText: answerText));
+      });
+
+      questions.add(
+        Question(
+          questionText: questionDetails['text'],
+          illness: questionDetails['illness'],
+          MID: questionDetails['MID'],
+          answerList: answerList,
+        ),
+      );
+    });
+  } as FutureOr Function(DatabaseEvent value));
+
+  return questions;
+}
+
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     centerTitle: true,
-    //     backgroundColor: Colors.blue.shade600,
-    //     elevation: 0, //drop shadow
-    //     title: const Text("Identify Your Sickness"),
-    //   ),
-    //   body: questionList.isEmpty // Check if questionList is empty
-    //       ? Center(child: CircularProgressIndicator()) // Show loading indicator while fetching
-    //       : _buildQuizWidget(), // Build the quiz widget when questions are available
-    // );
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -92,31 +86,13 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
     );
   }
 
-  //  Widget _buildQuizWidget() {
-  //   return Container(
-  //     margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
-  //     child: Column(
-  //       mainAxisAlignment: MainAxisAlignment.spaceAround,
-  //       children: [
-  //         _questionWidget(),
-  //         _answerList(),
-  //         _nextButton(),
-  //       ],
-  //     ),
-  //   );
-  // }
 
   _questionWidget() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Text(                //this for show question number
-        //   "Question ${currentQuestionIndex+1}/{questionList.length.toString()}",
-        //   style: const TextStyle(
-        //     color: Colors.black,
-        //   ),
-        // ),
+        
         const SizedBox(height: 15),
         Container(
           alignment: Alignment.center,
@@ -180,10 +156,7 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
   }
 
   _nextButton() {
-    bool islastQuestion = false;
-    if (currentQuestionIndex == questionList.length - 1) {
-      islastQuestion = true;
-    }
+    bool islastQuestion = currentQuestionIndex == questionList.length - 1;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.5,
@@ -196,58 +169,27 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
             onPrimary: Colors.black,
           ),
           onPressed: () {
-            if (islastQuestion) {
-              //redirect to result sheet
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ResultScreen()));
+            if (selectedAnswer != null) {
+              userAnswers[currentQuestionIndex] = selectedAnswer!;
+
+              if (islastQuestion) {
+                //redirect to result sheet with answers
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ResultScreen(userAnswers)));
+              } else {
+                //next question
+                setState(() {
+                  selectedAnswer = null;
+                  currentQuestionIndex++;
+                });
+              }
             } else {
-              //next question
-              setState(() {
-                selectedAnswer = null;
-                currentQuestionIndex++;
-              });
+              // You can show an alert or message saying "Please select an answer"
             }
           }),
     );
   }
-  // _nextButton() {
-  //   bool isLastQuestion = false;
-  //   if (currentQuestionIndex == questionList.length - 1) {
-  //     isLastQuestion = true;
-  //   }
-
-  //   return Container(
-  //     width: MediaQuery.of(context).size.width * 0.5,
-  //     height: 40,
-  //     child: ElevatedButton(
-  //       child: Text(isLastQuestion ? "Show Results" : "Next"),
-  //       style: ElevatedButton.styleFrom(
-  //         shape: const StadiumBorder(),
-  //         primary: Colors.green.shade400,
-  //         onPrimary: Colors.black,
-  //       ),
-  //       onPressed: () async {
-  //         if (isLastQuestion) {
-  //           try {
-  //             Map<String, dynamic> result = await Functions.submitAnswers(answers);
-  //             // Handle the result and display the most likely illness and scores
-  //             // You can navigate to the result screen with this data
-  //             Navigator.push(context, MaterialPageRoute(builder: (context) => ResultScreen(result)));
-  //           } catch (e) {
-  //             // Handle error
-  //             print("Error: $e");
-  //           }
-  //         } else {
-  //           // Next question
-  //           setState(() {
-  //             selectedAnswer = null;
-  //             currentQuestionIndex++;
-  //           });
-  //         }
-  //       },
-  //     ),
-  //   );
-  // }
-
 
 }

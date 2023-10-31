@@ -1,12 +1,68 @@
-// import 'dart:js';
+// import 'package:flutter/material.dart';
+// import 'quiz_model.dart';
+
+// class ResultScreen extends StatefulWidget {
+//   final Map<int, Answer> userAnswers;
+
+//   ResultScreen(this.userAnswers);
+
+//   @override
+//   _ResultScreenState createState() => _ResultScreenState();
+// }
+
+// class _ResultScreenState extends State<ResultScreen> {
+//   String? predictedIllness;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     predictedIllness = predictIllness();
+//   }
+
+//   String predictIllness() {
+//     int lastQuestionIndex = widget.userAnswers.keys.reduce((curr, next) => curr > next ? curr : next);
+//     Answer lastAnswer = widget.userAnswers[lastQuestionIndex]!;
+//     return lastAnswer.illness; 
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text('Your Results'),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Text(
+//               'Predicted Illness:',
+//               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+//             ),
+//             SizedBox(height: 20),
+//             Text(
+//               predictedIllness!,
+//               style: TextStyle(fontSize: 24, color: Colors.red),
+//             ),
+//             SizedBox(height: 40),
+//             ElevatedButton(
+//               onPressed: () => Navigator.pop(context), // to the quiz page
+//               child: Text('Go Back'),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
 
 import 'package:flutter/material.dart';
+import 'package:myalo_app/identifiyng_quiz/function.dart';
+import 'package:myalo_app/identifiyng_quiz/quiz_model.dart';
 import '../severity_checkup/landing_screen.dart';
 
 class ResultScreen extends StatelessWidget {
-  // final Map<String, dynamic> result;
-
-  // ResultScreen(this.result);
+  ResultScreen(Map<int, Answer> userAnswers);
 
   @override
   Widget build(BuildContext context) {
@@ -17,15 +73,6 @@ class ResultScreen extends StatelessWidget {
         elevation: 0, //drop shadow
         title: const Text("Identify Your Sickness"),
       ),
-      // body: Center(
-      //   child: Column(
-      //     mainAxisAlignment: MainAxisAlignment.center,
-      //     children: [
-      //       Text("Most Likely Illness: ${result['most_likely_illness']}"),
-      //       // Display other information from the result as needed
-      //     ],
-      //   ),
-      // ),
       body: Container(
           child: Column(
         children: [
