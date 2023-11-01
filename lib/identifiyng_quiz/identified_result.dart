@@ -3,6 +3,12 @@ import 'package:flutter/material.dart';
 import '../severity_checkup/landing_screen.dart';
 import 'mock_data.dart';
 import 'quiz_model.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
+final dbRef = FirebaseDatabase.instance.reference();
+
 
 class ResultScreen extends StatefulWidget {
   final Map<int, Answer> userAnswers;
@@ -94,13 +100,24 @@ class _ResultScreenState extends State<ResultScreen> {
           primary: Colors.blue.shade600,
           onPrimary: Color.fromARGB(230, 255, 255, 255),
         ),
-        onPressed: () {
+        onPressed: () async {
+          await _saveIllnessToFirestore(predictedIllness);
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => SeverityLanding()));
         },
       ),
     );
   }
+
+  Future<void> _saveIllnessToFirestore(String? illness) async {
+    if (illness == null) return;
+    CollectionReference illnesses = FirebaseFirestore.instance.collection('illnesses_identification');
+    await illnesses.add({
+      'illness': illness,
+      'timestamp': DateTime.now().toIso8601String(),
+    });
+  }
+
 }
 
 

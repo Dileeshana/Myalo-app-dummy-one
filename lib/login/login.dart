@@ -27,7 +27,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: <Widget>[
             Container(
-              color: Colors.orangeAccent[700],
+              color: Color.fromARGB(255, 0, 119, 255),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.70,
               child: Center(
@@ -230,21 +230,21 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "WEB",
+                          "Myalo",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 30,
                             color: Colors.blue[900],
                           ),
                         ),
-                        Text(
-                          "FUN",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 30,
-                            color: Colors.yellowAccent[400],
-                          ),
-                        ),
+                        // Text(
+                        //   "FUN",
+                        //   style: TextStyle(
+                        //     fontWeight: FontWeight.bold,
+                        //     fontSize: 30,
+                        //     color: Colors.yellowAccent[400],
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],

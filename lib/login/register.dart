@@ -38,12 +38,12 @@ class _RegisterState extends State<Register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.orange[900],
+      backgroundColor: Color.fromARGB(255, 0, 110, 255),
       body: SingleChildScrollView(
         child: Column(
           children: <Widget>[
             Container(
-              color: Colors.orangeAccent[700],
+              color: Color.fromARGB(255, 0, 183, 255),
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
@@ -290,11 +290,11 @@ class _RegisterState extends State<Register> {
                           height: 20,
                         ),
                         Text(
-                          "WEBFUN",
+                          "Myalo",
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 30,
-                            color: Colors.yellowAccent[400],
+                            color: Color.fromARGB(255, 0, 183, 255),
                           ),
                         ),
                       ],

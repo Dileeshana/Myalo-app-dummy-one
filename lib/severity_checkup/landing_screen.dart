@@ -54,7 +54,7 @@ class SeverityLanding extends StatelessWidget {
           onPrimary: Color.fromARGB(230, 255, 255, 255),
         ),
         onPressed: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => SeverityQuiz()));
+          Navigator.push(context, MaterialPageRoute(builder: (context) => SeverityQuiz(illness: '',)));
         },
       ),
     );

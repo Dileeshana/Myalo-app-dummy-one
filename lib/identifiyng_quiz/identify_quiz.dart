@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:myalo_app/identifiyng_quiz/identified_result.dart';
 import 'package:firebase_database/firebase_database.dart';
-
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'mock_data.dart';
 import 'quiz_model.dart';
 import 'dart:math';
@@ -23,9 +23,28 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
   StreamSubscription? connectivitySubscription;
   bool isConnected = true; // Initially assume there's connection
 
+  bool loadingTimedOut = false;
+  YoutubePlayerController? _controller;
+
   @override
   void initState() {
     super.initState();
+
+    _controller = YoutubePlayerController(
+      initialVideoId: 'hy_21kIKqk4',
+      flags: YoutubePlayerFlags(
+        autoPlay: false,
+        mute: false,
+      ),
+    );
+
+    Future.delayed(Duration(seconds: 5), () {
+      if (questionList.isEmpty) {
+        setState(() {
+          loadingTimedOut = true;
+        });
+      }
+    });
     // fetchQuestionsFromFirebase().then((questions) {
     //   setState(() {
     //       questionList = questions;
@@ -119,6 +138,18 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
   }
 
   Widget build(BuildContext context) {
+
+    if (loadingTimedOut) {
+      return YoutubePlayer(
+        controller: _controller!,
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: Colors.blueAccent,
+        onReady: () {
+          print('Player is ready.');
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -257,7 +288,23 @@ class _IdentifyQuizState extends State<IdentifyQuiz> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ResultScreen(userAnswers)));
+                        builder: (context) => YoutubePlayer(
+                        controller: _controller!,
+                        showVideoProgressIndicator: true,
+                        progressIndicatorColor: Colors.blueAccent,
+                        onReady: () {
+                          print('Player is ready.');
+                        },
+                      ),
+                    ),
+                  ).then((_) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ResultScreen(userAnswers),
+                      ),
+                    );
+                  });
               } else {
                 //next question
                 setState(() {

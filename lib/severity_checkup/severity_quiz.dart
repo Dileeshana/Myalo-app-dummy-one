@@ -1,42 +1,88 @@
 import 'package:flutter/material.dart';
-import 'package:myalo_app/models/severity_quiz_model.dart';
-
+import 'package:myalo_app/severity_checkup/severity_quiz_model.dart';
+import 'model_map.dart';
 import 'severity_result.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SeverityQuiz extends StatefulWidget {
+  final String illness;
+
+  SeverityQuiz({required this.illness});
+
   @override
   State<SeverityQuiz> createState() => _SeverityQuizState();
 }
 
 class _SeverityQuizState extends State<SeverityQuiz> {
-  List<Question> questionList = getQuestions();
+  List<SeverityQuestion> questionList = [];
   int currentQuestionIndex = 0;
-  Answer? selectedAnswer;
+  int? selectedOptionId;
+  Map<int, int> selectedAnswers = {}; // Store the selected option for each question
+
+  bool failedToLoad = false; // to track if the data fetching has failed
+  bool loadingTimedOut = false; // to track if loading timed out
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Start a timer. If the timer runs out, set loadingTimedOut to true
+    // and navigate to the YouTube player
+    Future.delayed(Duration(seconds: 5), () {
+      if (questionList.isEmpty) {
+        setState(() {
+          loadingTimedOut = true;
+        });
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => YouTubeVideoScreen()));
+      }
+    });
+
+    _fetchQuestions(widget.illness).then((fetchedQuestions) {
+      print("Fetched questions: ${fetchedQuestions.length}");
+      if (!loadingTimedOut) {
+        setState(() {
+          questionList = fetchedQuestions;
+        });
+      }
+    });
+  }
+
+  Future<List<SeverityQuestion>> _fetchQuestions(String illness) async {
+    await Future.delayed(Duration(seconds: 2)); // Simulate network delay
+    return getQuestionsForIllness(illness);
+  }
+
+  List<SeverityQuestion> getQuestionsForIllness(String illness) {
+    return severityQuestionsByIllness[illness] ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (questionList.isEmpty) {
+      // If the questions haven't been loaded yet, display a loading indicator
+      return Scaffold(
+        appBar: AppBar(
+          title: Text("Loading..."),
+        ),
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.blue.shade600,
-        elevation: 0, //drop shadow
+        elevation: 0,
         title: const Text("Severity Checking"),
       ),
-      // backgroundColor: Color.fromARGB(251, 197, 245, 255),
       body: Container(
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 30),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            // const Text(
-            //   "Identify Your Sickness",
-            //   style: TextStyle(
-            //     color: Colors.black87,
-            //     fontSize: 22,
-            //   ),
-            // ),
             _questionWidget(),
-            _answerList(),
+            _optionList(),
             _nextButton(),
           ],
         ),
@@ -49,12 +95,6 @@ class _SeverityQuizState extends State<SeverityQuiz> {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // Text(                //this for show question number
-        //   "Question ${currentQuestionIndex+1}/{questionList.length.toString()}",
-        //   style: const TextStyle(
-        //     color: Colors.black,
-        //   ),
-        // ),
         const SizedBox(height: 15),
         Container(
           alignment: Alignment.center,
@@ -65,7 +105,7 @@ class _SeverityQuizState extends State<SeverityQuiz> {
             borderRadius: BorderRadius.circular(10),
           ),
           child: Text(
-            questionList[currentQuestionIndex].questionText,
+            questionList[currentQuestionIndex].question,
             style: const TextStyle(
               color: Color.fromARGB(255, 0, 0, 0),
               fontSize: 15,
@@ -77,26 +117,22 @@ class _SeverityQuizState extends State<SeverityQuiz> {
     );
   }
 
-  _answerList() {
+  _optionList() {
     return Column(
-      children: questionList[currentQuestionIndex]
-          .answerList
-          .map(
-            (e) => _answerButton(e),
-          )
-          .toList(),
+      children: questionList[currentQuestionIndex].options.entries.map(
+        (entry) => _optionButton(entry.key, entry.value),
+      ).toList(),
     );
   }
 
-  Widget _answerButton(Answer answer) {
-    bool isSelected = answer == selectedAnswer;
-
+  Widget _optionButton(int id, String text) {
+    bool isSelected = id == selectedOptionId;
     return Container(
       width: double.infinity,
       margin: const EdgeInsets.symmetric(vertical: 8),
       height: 40,
       child: ElevatedButton(
-        child: Text(answer.answerText),
+        child: Text(text),
         style: ElevatedButton.styleFrom(
           shape: const StadiumBorder(),
           primary: isSelected
@@ -106,7 +142,7 @@ class _SeverityQuizState extends State<SeverityQuiz> {
         ),
         onPressed: () {
           setState(() {
-            selectedAnswer = answer;
+            selectedOptionId = id;
           });
         },
       ),
@@ -114,10 +150,7 @@ class _SeverityQuizState extends State<SeverityQuiz> {
   }
 
   _nextButton() {
-    bool islastQuestion = false;
-    if (currentQuestionIndex == questionList.length - 1) {
-      islastQuestion = true;
-    }
+    bool islastQuestion = currentQuestionIndex == questionList.length - 1;
 
     return Container(
       width: MediaQuery.of(context).size.width * 0.5,
@@ -130,21 +163,52 @@ class _SeverityQuizState extends State<SeverityQuiz> {
             onPrimary: Colors.black,
           ),
           onPressed: () {
-            if (islastQuestion) {
-              //redirect to result sheet
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => ResultScreen()));
-            } else {
-              //next question
-              setState(() {
-                selectedAnswer = null;
-                currentQuestionIndex++;
-              });
+            if (selectedOptionId != null) {
+              selectedAnswers[currentQuestionIndex] = selectedOptionId!;
+              
+              if (islastQuestion) {
+                // TODO: Pass the selected answers to the ResultScreen for evaluation.
+                Navigator.push(context, MaterialPageRoute(builder: (context) => ResultScreen()));
+              } else {
+                setState(() {
+                  selectedOptionId = null;
+                  currentQuestionIndex++;
+                });
+              }
             }
           }),
     );
   }
 }
+
+class YouTubeVideoScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    YoutubePlayerController _controller = YoutubePlayerController(
+      initialVideoId: 'QC_pOHytzrg', 
+      flags: YoutubePlayerFlags(
+        autoPlay: true,
+        mute: false,
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('YouTube Video'),
+      ),
+      body: YoutubePlayer(
+        controller: _controller,
+        showVideoProgressIndicator: true,
+        progressIndicatorColor: Colors.blueAccent,
+        progressColors: ProgressBarColors(
+          playedColor: Colors.blueAccent,
+          handleColor: Colors.blueAccent,
+        ),
+      ),
+    );
+  }
+}
+
 
 
 //try this for latest5
